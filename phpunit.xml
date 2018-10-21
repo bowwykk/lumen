@@ -21,6 +21,8 @@
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="CACHE_DRIVER" value="array"/>
+        <!-- Test Database -->
+        <env name="DB_DATABASE" value="bookr_testing2"/>
         <env name="QUEUE_DRIVER" value="sync"/>
     </php>
 </phpunit>
