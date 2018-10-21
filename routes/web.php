@@ -35,3 +35,58 @@ $router->get('/response', function (Illuminate\Http\Request $request) {
     return response()
         ->make('Hello stranger', 200, ['Content-Type' => 'text/plain']);
 });
+
+$router->get('/books', 'BooksController@index');
+// $router->get('/books/{id}', 'BooksController@show');
+$router->get('/books/{id:[\d]+}', 'BooksController@show');
+
+$router->post('/books', 'BooksController@store');
+
+$router->get('/books/{id:[\d]+}', [
+    'as' => 'books.show',
+    'uses' => 'BooksController@show'
+]);
+
+$router->put('/books/{id:[\d]+}', 'BooksController@update');
+
+$router->delete('/books/{id:[\d]+}', 'BooksController@destroy');
+
+$router->group([
+    'prefix' => '/authors',
+    'namespace' => '\App\Http\Controllers'
+], function () use ($router) {
+    $router->get('/', 'AuthorsController@index');
+    $router->post('/', 'AuthorsController@store');
+    $router->get('/{id:[\d]+}', [
+        'as' => 'authors.show',
+        'uses' => 'AuthorsController@show'
+    ]);
+    $router->put('/{id:[\d]+}', 'AuthorsController@update');
+    $router->delete('/{id:[\d]+}', 'AuthorsController@destroy');
+
+    // Author ratings
+    $router->post('/{id:[\d]+}/ratings', 'AuthorsRatingsController@store');
+    $router->delete(
+        '/{authorId:[\d]+}/ratings/{ratingId:[\d]+}',
+        'AuthorsRatingsController@destroy'
+    );
+});
+
+
+$router->group([
+    'prefix' => '/bundles',
+    'namespace' => '\App\Http\Controllers'
+], function () use ($router) {
+    $router->get('/{id:[\d]+}', [
+        'as' => 'bundles.show',
+        'uses' => 'BundlesController@show'
+    ]);
+    $router->put(
+        '/{bundleId:[\d]+}/books/{bookId:[\d]+}',
+        'BundlesController@addBook'
+    );
+    $router->delete(
+        '/{bundleId:[\d]+}/books/{bookId:[\d]+}',
+        'BundlesController@removeBook'
+    );
+});
